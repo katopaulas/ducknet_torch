@@ -40,11 +40,21 @@ class DuckNet(nn.Module):
         self.duck32 = DUCKBlock(num_filters * 8, num_filters * 4)
         self.duck42 = DUCKBlock(num_filters * 16, num_filters * 8)
 
-        self.last_conv = nn.Sequential(
-            nn.Conv2d(num_filters, num_classes, 1, 1, 0),
-            nn.Sigmoid()
-        )
-
+        #self.last_conv = nn.Sequential(
+        #    nn.Conv2d(num_filters, num_classes, 1, 1, 0),
+        #    nn.Sigmoid()
+        #)
+        
+        
+        self.last_conv = nn.Conv2d(num_filters, num_classes, 1, 1, 0)
+        
+        self.classifier =  nn.Sequential(nn.Flatten(),
+                                         nn.Linear(256*256,1),
+                                         nn.Sigmoid()
+         )
+       
+        
+        
     def forward(self, x):
         p1 = self.conv11(x)
         p2 = self.conv21(p1)
@@ -96,8 +106,9 @@ class DuckNet(nn.Module):
         q0 = self.duck02(c0)
 
         out = self.last_conv(q0)
-
-        return out
+        
+        out = self.classifier(out)
+        return out.squeeze()
     
 
 if __name__ == '__main__':
