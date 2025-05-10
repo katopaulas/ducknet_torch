@@ -48,10 +48,17 @@ class DuckNet(nn.Module):
         
         self.last_conv = nn.Conv2d(num_filters, num_classes, 1, 1, 0)
         
+        # self.classifier =  nn.Sequential(nn.Flatten(),
+        #                                  nn.Linear(256*256,1),
+        #                                  #nn.Sigmoid()
+        #  )
+
         self.classifier =  nn.Sequential(nn.Flatten(),
-                                         nn.Linear(256*256,1),
-                                         nn.Sigmoid()
-         )
+                                         nn.Linear(256*256,64),
+                                         nn.GELU(),
+                                         nn.Dropout(0.3),
+                                         nn.Linear(64,1),
+                                         )
        
         
         
